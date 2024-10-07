@@ -1,23 +1,23 @@
-// src/components/BlogContainer.jsx
-
 import React, { useEffect, useState } from 'react';
 import { Select, Box, VStack, Text, Spinner, Alert, AlertIcon } from '@chakra-ui/react';
 import axios from 'axios';
+import BlogList from './BlogList';
 
 const BlogContainer = () => {
-    const [category, setCategory] = useState('tech'); // Default category
+    const [category, setCategory] = useState('tech');
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     const fetchBlogs = async (category) => {
         setLoading(true);
-        setError(''); // Clear any previous error messages
+        setError('');
         try {
             const response = await axios.get(`http://localhost:8000/posts?category=${category}`);
             setBlogs(response.data);
         } catch (err) {
-            setError('Error fetching blogs'); // Set error message for fetch issues
+            setError('Error fetching blogs');
+            console.error(err);
         } finally {
             setLoading(false);
         }
@@ -28,7 +28,7 @@ const BlogContainer = () => {
     }, [category]);
 
     return (
-        <Box p={5}>
+        <Box>
             <Select
                 placeholder="Select category"
                 value={category}
@@ -37,6 +37,7 @@ const BlogContainer = () => {
             >
                 <option value="tech">Tech</option>
                 <option value="stock market">Stock Market</option>
+                <option value="general">General</option>
             </Select>
 
             {loading && <Spinner />}
@@ -47,26 +48,13 @@ const BlogContainer = () => {
                 </Alert>
             )}
 
-            {/* Check if blogs are empty and display message */}
-            {blogs.length === 0 && !loading && !error && ( // Ensure no error and no loading
+            {blogs.length === 0 && !loading && !error && (
                 <Text>No blogs available for this category.</Text>
             )}
 
-            <VStack spacing={4} align="start">
-                {blogs.map((blog) => (
-                    <Box key={blog.id} p={5} shadow="md" borderWidth="1px">
-                        <Text fontWeight="bold">{blog.title}</Text>
-                        <Text color="gray.600">By: {blog.author}</Text>
-                        <Text mt={2}>{blog.content}</Text>
-                        <Text fontSize="sm" color="gray.400">{blog.date}</Text>
-                    </Box>
-                ))}
-            </VStack>
+            {blogs.length > 0 && <BlogList posts={blogs} />}
         </Box>
     );
 };
 
 export default BlogContainer;
-
-
-
