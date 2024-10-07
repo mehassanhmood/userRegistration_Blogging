@@ -23,8 +23,9 @@ async def add_blog(blog: BlogModel, db: Session = Depends(get_db)):
     return db_blog
 
 @router.get("/blogs/",response_model=List[BlogModel])
-async def read_blog(db: Session = Depends(get_db), skip: int=0, limit:int=10):
-    blogs = db.query(BlogPost).limit(limit).all()
+async def read_blog(db: Session = Depends(get_db), skip: int=0, limit:int=10, category:str = "Tech"):
+    # blogs = db.query(BlogPost).limit(limit).all()
+    blogs = db.query(BlogPost).filter(BlogPost.category == category).limit(limit).all()
     return blogs
 
 @router.delete("/blogs/{blog_id}", response_model=dict)

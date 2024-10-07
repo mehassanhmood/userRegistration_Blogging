@@ -7,10 +7,14 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 
-origins = [""]
+origins = ["http://localhost:5173",]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins
+    allow_origins=origins,
+    allow_methods = ["*"],
+    allow_credentials = True,
+    allow_headers=["*"]
+
 )
 
 # def get_db():

@@ -27,6 +27,7 @@ class BlogPost(Base):
     title = Column(String(250))
     subtitle = Column(String(250))
     date = Column(String(250))
+    category = Column(String(250))
     body = Column(Text)
     author = Column(String(250))
 

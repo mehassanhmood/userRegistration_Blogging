@@ -6,6 +6,7 @@ class BlogModel(BaseModel):
     title: str
     subtitle: str
     date: str
+    category: str
     body: str
     author: str
 

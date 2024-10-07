@@ -4,7 +4,7 @@ import axios from 'axios';
 import BlogList from './BlogList';
 
 const BlogContainer = () => {
-  const [category, setCategory] = useState('tech');
+  const [category, setCategory] = useState('Tech');
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -13,7 +13,7 @@ const BlogContainer = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get(`http://localhost:8000/posts?category=${category}`);
+      const response = await axios.get(`http://localhost:8000/blog/blogs?category=${category}`);
       setBlogs(response.data);
     } catch (err) {
       setError('Error fetching blogs');
@@ -40,7 +40,7 @@ const BlogContainer = () => {
         borderColor="gray.600"
         _hover={{ borderColor: 'cyan.300' }}
       >
-        <option value="tech">Tech</option>
+        <option value="Tech">Tech</option>
         <option value="stock market">Stock Market</option>
         <option value="general">General</option>
       </Select>
