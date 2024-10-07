@@ -1,0 +1,23 @@
+[
+    {
+      "id": 1,
+      "title": "Understanding Stock Market Trends",
+      "content": "The stock market is influenced by many factors like economic conditions, interest rates, and market sentiment. Learning how to spot trends is key for successful trading."
+    },
+    {
+      "id": 2,
+      "title": "The Importance of Risk Management in Trading",
+      "content": "In trading, managing risk is more important than finding winning trades. This post explains how to protect your capital while still seeking profit."
+    },
+    {
+      "id": 3,
+      "title": "Technical Analysis 101",
+      "content": "Technical analysis involves evaluating securities by analyzing statistics like past prices and volume. It helps traders predict future market movements."
+    },
+    {
+      "id": 4,
+      "title": "Fundamental Analysis for Long-term Investing",
+      "content": "Fundamental analysis focuses on a company’s financial health and the overall economy to determine the intrinsic value of stocks. It's essential for long-term investments."
+    }
+  ]
+  
