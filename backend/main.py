@@ -2,9 +2,9 @@
 from fastapi import FastAPI, HTTPException, Depends
 from typing import Annotated, List
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from .database import session_maker, engine
-from .models import BlogPost, Base
+from helper import hash_password
+from database import session_maker, engine, Base, BlogPost, User
+from models import BlogModel, MakeUser
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -15,22 +15,6 @@ app.add_middleware(
     allow_origins=origins
 )
 
-class BlogBase(BaseModel):
-    id: int
-    title: str
-    subtitle: str
-    date: str
-    body: str
-    author: str
-
-
-class BlogModel(BlogBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
 def get_db():
     db = session_maker()
     try:
@@ -39,10 +23,11 @@ def get_db():
         db.close()
 
 db_dependency = Annotated[Session, Depends(get_db)]
-Base.metadata.create_all(bind=engine)
 
+
+# Blog routes:
 @app.post("/blogs/",response_model=BlogModel)
-async def add_blog(blog: BlogBase, db:db_dependency):
+async def add_blog(blog: BlogModel, db:db_dependency):
     db_blog = BlogPost(**blog.dict())
     db.add(db_blog)
     db.commit()
@@ -66,3 +51,20 @@ async def delete_blog(blog_id: int, db: db_dependency):
     
     # Return a success message
     return {"detail": "Blog post deleted successfully"}
+
+
+# User Registration:
+@app.post("/register")
+def register(user: MakeUser, db: Session = Depends(get_db)):
+
+    db_user = db.query(User).filter(User.email == user.email).first()
+
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered!")
+    
+    hashed_password = hash_password(user.password)
+    new_user = User(username= user.username, email = user.email, hashed_password = hashed_password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"message": "Registration complete!"}

@@ -1,17 +1,23 @@
-# app/models.py
+# pydantic models:
+from pydantic import BaseModel, EmailStr
 
-from .database import Base
-from sqlalchemy import Column, Integer, String, Text
+class BlogModel(BaseModel):
+    id: int
+    title: str
+    subtitle: str
+    date: str
+    body: str
+    author: str
 
-class BlogPost(Base):
+    class Config:
+        orm_mode = True
 
-    __tablename__ = "blog_posts"
+class MakeUser(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
 
-    id = Column(Integer, primary_key=True, index= True)
-    title = Column(String(250))
-    subtitle = Column(String(250))
-    date = Column(String(250))
-    body = Column(Text)
-    author = Column(String(250))
+    class Config:
+        orm_mode =  True
 
 
