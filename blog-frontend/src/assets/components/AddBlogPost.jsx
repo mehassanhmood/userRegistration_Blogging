@@ -15,7 +15,7 @@ const AddBlogPost = () => {
       id: Date.now(),  // Automatically generated ID
       title,
       subtitle,  // Subtitle field is included
-      date: new Date().toISOString(),  // Date in ISO format (could be customized)
+      date: new Date().toLocaleDateString(),  // Date in ISO format (could be customized)
       category,
       body: content,  // 'content' mapped to 'body'
       author,
