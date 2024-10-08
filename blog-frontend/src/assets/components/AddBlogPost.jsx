@@ -1,29 +1,50 @@
 import React, { useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
 
-const AddBlogPost = ({ onAddPost }) => {
+const AddBlogPost = () => {
   const [author, setAuthor] = useState('');
   const [title, setTitle] = useState('');
+  const [subtitle, setSubtitle] = useState('');  // Add a field for subtitle
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const newPost = {
-      id: Date.now(),
-      author,
+      id: Date.now(),  // Automatically generated ID
       title,
-      content,
+      subtitle,  // Subtitle field is included
+      date: new Date().toISOString(),  // Date in ISO format (could be customized)
       category,
-      date: new Date().toLocaleDateString(),
+      body: content,  // 'content' mapped to 'body'
+      author,
     };
 
-    onAddPost(newPost);
-    setAuthor('');
-    setTitle('');
-    setContent('');
-    setCategory('');
+    try {
+      const response = await fetch('http://localhost:8000/blog/blogs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPost),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Post added successfully:', data);
+        // Optionally reset the form fields
+        setAuthor('');
+        setTitle('');
+        setSubtitle('');  // Clear subtitle field
+        setContent('');
+        setCategory('');
+      } else {
+        console.error('Failed to add post:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -50,6 +71,20 @@ const AddBlogPost = ({ onAddPost }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter blog title"
+            bg="gray.700"
+            color="green.300"
+            _placeholder={{ color: 'gray.400' }}
+            border="1px solid"
+            borderColor="gray.600"
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel color="cyan.300">Subtitle</FormLabel>
+          <Input
+            type="text"
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
+            placeholder="Enter blog subtitle"
             bg="gray.700"
             color="green.300"
             _placeholder={{ color: 'gray.400' }}
