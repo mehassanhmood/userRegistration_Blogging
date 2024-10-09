@@ -13,11 +13,9 @@ import os
 SECRET_KEY = "develpment_environment"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl = "login")
+OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl="login")
 
 PWD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
 
 def get_db():
     db = session_maker()
@@ -26,17 +24,16 @@ def get_db():
     finally:
         db.close()
 
-
-# funtion to hash the password:
-def hash_password(password:str) -> str:
+# function to hash the password
+def hash_password(password: str) -> str:
     return PWD_CONTEXT.hash(password)
 
-# to verify the password:
-def verify_password(plain_password: str, hashed_password:str) -> bool:
+# to verify the password
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     return PWD_CONTEXT.verify(plain_password, hashed_password)
 
 # to authenticate user
-def authenticate_user(db, username:str, password:str):
+def authenticate_user(db, username: str, password: str):
     user = db.query(User).filter(User.username == username).first()
     if not user:
         return False
@@ -44,41 +41,36 @@ def authenticate_user(db, username:str, password:str):
         return False
     return user
 
-# the following function goes in add_blog:
-def get_current_user(db, token:str = Depends(OAUTH2_SCHEME)):
-    
-    try: 
+# function to get the current user
+def get_current_user(db, token: str = Depends(OAUTH2_SCHEME)):
+    try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise HTTPException(
-                status_code = status.HTTP_401_UNAUTHORIZED,
-                details = "Could not validate credentials",
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",  # Fixed typo
                 headers={"WWW-Authenticate": "Bearer"}
             )
         user = db.query(User).filter(User.username == username).first()
         if user is None:
             raise HTTPException(
-                status_code = status.HTTP_401_UNAUTHORIZED,
-                details = "Could not validate credentials",
-                headers = {"WW-Authenticate": "Bearer"},
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",  # Fixed typo
+                headers={"WWW-Authenticate": "Bearer"},
             )
         return user
     except JWTError:
         raise HTTPException(
-            status_code = status.HTTP_401_UNAUTHORIZED,
-            details = "Could not validate credentials",
-            headers = {"WWW-Authenticate": "Bearer"}
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",  # Fixed typo
+            headers={"WWW-Authenticate": "Bearer"}
         )
 
-# jwt token verification:
-def make_access_token(data:dict) -> str:
+# jwt token generation
+def make_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-
-
-
-     

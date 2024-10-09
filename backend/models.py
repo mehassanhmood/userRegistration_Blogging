@@ -11,7 +11,7 @@ class BlogModel(BaseModel):
     author: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class MakeUser(BaseModel):
     username: str
@@ -19,7 +19,7 @@ class MakeUser(BaseModel):
     password: str
 
     class Config:
-        orm_mode =  True
+        from_attributes =  True
 
 
 # jwt token pydantic model:
