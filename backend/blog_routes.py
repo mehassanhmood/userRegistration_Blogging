@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import session_maker,BlogPost
+from database import session_maker,BlogPost, User
 from models import BlogModel
 from typing import List 
+from helper import get_current_user
 
 router = APIRouter()
 
@@ -11,11 +12,11 @@ def get_db():
     try:
         yield db
     finally:
-        db.close
+        db.close()
 
 
 @router.post("/blogs/",response_model=BlogModel)
-async def add_blog(blog: BlogModel, db: Session = Depends(get_db)):
+async def add_blog(blog: BlogModel, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     db_blog = BlogPost(**blog.dict())
     db.add(db_blog)
     db.commit()

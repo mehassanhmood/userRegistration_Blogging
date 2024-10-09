@@ -22,3 +22,7 @@ class MakeUser(BaseModel):
         orm_mode =  True
 
 
+# jwt token pydantic model:
+class Token(BaseModel):
+    access_token: str
+    token_type: str
