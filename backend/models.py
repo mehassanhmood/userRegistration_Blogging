@@ -1,6 +1,11 @@
 # pydantic models:
 from pydantic import BaseModel, EmailStr
 
+from pydantic import BaseModel, Field
+from typing import Optional
+
+from pydantic import BaseModel
+
 class BlogModel(BaseModel):
     id: int
     title: str
@@ -8,10 +13,12 @@ class BlogModel(BaseModel):
     date: str
     category: str
     body: str
-    author: str
+    author: str  # Assuming you'll pass this from the current_user
 
     class Config:
-        from_attributes = True
+        orm_mode = True  # This is important to allow SQLAlchemy models to be converted to Pydantic models
+
+
 
 class MakeUser(BaseModel):
     username: str

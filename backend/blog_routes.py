@@ -15,13 +15,21 @@ def get_db():
         db.close()
 
 
-@router.post("/blogs/",response_model=BlogModel)
+@router.post("/blogs/", response_model=BlogModel)
 async def add_blog(blog: BlogModel, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    db_blog = BlogPost(**blog.dict())
+    db_blog = BlogPost(
+        title=blog.title,
+        subtitle=blog.subtitle,
+        date=blog.date,
+        category=blog.category,
+        body=blog.body,
+        author=current_user.username  # Assuming current_user has an attribute 'username'
+    )
     db.add(db_blog)
     db.commit()
     db.refresh(db_blog)
     return db_blog
+
 
 @router.get("/blogs/",response_model=List[BlogModel])
 async def read_blog(db: Session = Depends(get_db), skip: int=0, limit:int=10, category:str = "Tech"):
