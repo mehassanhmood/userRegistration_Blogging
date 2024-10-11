@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Heading, Text, Badge, Flex, useColorModeValue } from '@chakra-ui/react'
 
-const BlogPostCard = ({post}) => {
+const BlogPostCard = ({ post, onClick }) => {
   const bgColor = useColorModeValue('white', 'gray.700');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
 
@@ -13,6 +13,8 @@ const BlogPostCard = ({post}) => {
       borderRadius="lg"
       borderColor={borderColor}
       bg={bgColor}
+      onClick={onClick}
+      cursor="pointer"
       _hover={{ 
         shadow: "lg",
         transform: "translateY(-2px)",
