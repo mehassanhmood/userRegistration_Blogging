@@ -76,7 +76,7 @@ const BlogPost = ({ blogId, onClose, onDelete }) => {
 
   if (!blog) return null;
 
-  // Safely render HTML content
+  // Safely render HTML content with DOMPurify
   const createMarkup = (html) => {
     return { __html: DOMPurify.sanitize(html) };
   };
@@ -91,28 +91,61 @@ const BlogPost = ({ blogId, onClose, onDelete }) => {
         className="blog-content" 
         dangerouslySetInnerHTML={createMarkup(blog.body)} // Render the body with formatting
         sx={{
-          'h1, h2, h3, h4, h5, h6': {
-            color: 'cyan.300',
-            marginTop: '1em',
-            marginBottom: '0.5em',
+          '.ql-size-huge': { fontSize: '2.5em' },
+          '.ql-size-large': { fontSize: '1.5em' },
+          '.ql-size-small': { fontSize: '0.75em' },
+
+          // Handle headers (h1, h2, etc.)
+          h1: { fontSize: '2.5em', fontWeight: 'bold', color: 'cyan.300', marginBottom: '1em' },
+          h2: { fontSize: '2em', fontWeight: 'bold', color: 'cyan.300', marginBottom: '0.75em' },
+          h3: { fontSize: '1.75em', fontWeight: 'bold', color: 'cyan.300', marginBottom: '0.75em' },
+          h4: { fontSize: '1.5em', fontWeight: 'bold', color: 'cyan.300', marginBottom: '0.5em' },
+          h5: { fontSize: '1.25em', fontWeight: 'bold', color: 'cyan.300', marginBottom: '0.5em' },
+          h6: { fontSize: '1em', fontWeight: 'bold', color: 'cyan.300', marginBottom: '0.5em' },
+
+          // General paragraph and text styling
+          p: { marginBottom: '1.5em', lineHeight: '1.75', fontSize: '1.1em' },
+          strong: { fontWeight: 'bold' },
+          em: { fontStyle: 'italic' },
+          u: { textDecoration: 'underline' },
+          s: { textDecoration: 'line-through' },
+
+          // List styles
+          ul: { paddingLeft: '2em', marginBottom: '1.5em' },
+          ol: { paddingLeft: '2em', marginBottom: '1.5em' },
+          'ul li': { listStyleType: 'disc' },
+          'ol li': { listStyleType: 'decimal' },
+
+          // Indented list items
+          '.ql-indent-1': { marginLeft: '1em' },
+          '.ql-indent-2': { marginLeft: '2em' },
+          '.ql-indent-3': { marginLeft: '3em' },
+          '.ql-indent-4': { marginLeft: '4em' },
+          '.ql-indent-5': { marginLeft: '5em' },
+          '.ql-indent-6': { marginLeft: '6em' },
+          '.ql-indent-7': { marginLeft: '7em' },
+          '.ql-indent-8': { marginLeft: '8em' },
+
+          // Blockquote and code block styles
+          blockquote: {
+            paddingLeft: '1.5em',
+            borderLeft: '4px solid cyan',
+            fontStyle: 'italic',
+            color: 'gray.400',
+            marginBottom: '1.5em',
           },
-          p: {
-            marginBottom: '1em',
-            lineHeight: '1.5', // Add line height for readability
+          pre: {
+            backgroundColor: 'gray.700',
+            padding: '1em',
+            borderRadius: '0.5em',
+            overflowX: 'auto',
+            marginBottom: '1.5em',
           },
-          ul: {
-            paddingLeft: '2em',
-            marginBottom: '1em',
-          },
-          ol: {
-            paddingLeft: '2em',
-            marginBottom: '1em',
-          },
-          'ul li': {
-            listStyle: 'disc',
-          },
-          'ol li': {
-            listStyle: 'decimal',
+          code: {
+            backgroundColor: 'gray.700',
+            padding: '0.2em 0.4em',
+            borderRadius: '0.2em',
+            fontSize: '0.95em',
           },
         }}
       />
