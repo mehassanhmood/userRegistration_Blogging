@@ -31,6 +31,7 @@ const AddBlogPost = () => {
       if (response.ok) {
         const data = await response.json();
         setToken(data.access_token);
+        localStorage.setItem('token', data.access_token);  // Save token to local storage
         setIsLoggedIn(true);
         toast({
           title: 'Login successful',

@@ -38,6 +38,7 @@ const BlogPost = ({ blogId, onClose, onDelete }) => {
   
     fetchBlog();
   }, [blogId]);
+  
 
   const handleDelete = async () => {
     try {

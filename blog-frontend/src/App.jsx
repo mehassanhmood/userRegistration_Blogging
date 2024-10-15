@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ChakraProvider,
   Box,
@@ -35,15 +35,27 @@ const theme = extendTheme({
   },
 });
 
-const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear the token from localStorage
-    setIsLoggedIn(false); // Update the state
-    window.location.reload(); // Reload to ensure UI updates properly
-  };
-
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
+
+  useEffect(() => {
+    // Check if token exists in localStorage
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    // Remove the token from localStorage on logout
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+  };
 
   const handleAddPost = (newPost) => {
     console.log('New post:', newPost);
@@ -63,7 +75,7 @@ function App() {
                 color="cyan.300"
                 _hover={{ bg: 'gray.700' }}
                 mr={4}
-                onClick={() => setIsLoggedIn(!isLoggedIn)}
+                onClick={isLoggedIn ? handleLogout : handleLogin}
               >
                 {isLoggedIn ? 'Logout' : 'Login'}
               </Button>
