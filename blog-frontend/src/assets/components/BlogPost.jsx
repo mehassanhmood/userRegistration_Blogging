@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Heading, Text, Spinner, Alert, AlertIcon, Button, Badge, HStack, useToast } from '@chakra-ui/react';
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 const BlogPost = ({ blogId, onClose, onDelete }) => {
   const [blog, setBlog] = useState(null);
@@ -15,17 +16,17 @@ const BlogPost = ({ blogId, onClose, onDelete }) => {
       try {
         const token = localStorage.getItem('token');
         let userId = null;
-  
+
         if (token) {
           userId = JSON.parse(atob(token.split('.')[1])).sub; // Decode JWT token to get the user ID
         }
-  
+
         const response = await axios.get(`http://localhost:8000/blog/blogs/${blogId}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}, // Add token if available
         });
         setBlog(response.data);
-  
-        if (userId && response.data.author === userId) {
+
+        if (response.data.author === userId || response.data.author === '') {
           setIsOwner(true); // Check if the logged-in user is the owner of the blog
         }
       } catch (err) {
@@ -35,10 +36,9 @@ const BlogPost = ({ blogId, onClose, onDelete }) => {
         setLoading(false);
       }
     };
-  
+
     fetchBlog();
   }, [blogId]);
-  
 
   const handleDelete = async () => {
     try {
@@ -76,14 +76,47 @@ const BlogPost = ({ blogId, onClose, onDelete }) => {
 
   if (!blog) return null;
 
+  // Safely render HTML content
+  const createMarkup = (html) => {
+    return { __html: DOMPurify.sanitize(html) };
+  };
+
   return (
     <Box color="green.300" bg="gray.800" p={6} borderRadius="lg">
       <Heading as="h2" size="xl" mb={4}>{blog.title}</Heading>
       <Text fontSize="sm" mb={2}>By {blog.author} | {blog.date}</Text>
       <Badge colorScheme="teal" mb={4}>{blog.category}</Badge>
       {blog.subtitle && <Text fontSize="lg" fontStyle="italic" mb={4}>{blog.subtitle}</Text>}
-      <Text mb={6} whiteSpace="pre-wrap">{blog.body}</Text>
-      <HStack spacing={4}>
+      <Box 
+        className="blog-content" 
+        dangerouslySetInnerHTML={createMarkup(blog.body)} // Render the body with formatting
+        sx={{
+          'h1, h2, h3, h4, h5, h6': {
+            color: 'cyan.300',
+            marginTop: '1em',
+            marginBottom: '0.5em',
+          },
+          p: {
+            marginBottom: '1em',
+            lineHeight: '1.5', // Add line height for readability
+          },
+          ul: {
+            paddingLeft: '2em',
+            marginBottom: '1em',
+          },
+          ol: {
+            paddingLeft: '2em',
+            marginBottom: '1em',
+          },
+          'ul li': {
+            listStyle: 'disc',
+          },
+          'ol li': {
+            listStyle: 'decimal',
+          },
+        }}
+      />
+      <HStack spacing={4} mt={6}>
         <Button onClick={onClose} colorScheme="cyan">Back to list</Button>
         {isOwner && (
           <Button onClick={handleDelete} colorScheme="red">Delete Blog</Button>

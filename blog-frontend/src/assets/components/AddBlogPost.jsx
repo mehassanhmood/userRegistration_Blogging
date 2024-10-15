@@ -1,16 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, Textarea, VStack, useToast, Text, Link, Select } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Input, VStack, useToast, Text, Link, Select } from '@chakra-ui/react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
+// Custom CSS for the Quill editor
+const quillStyles = `
+  .ql-container {
+    min-height: 300px;
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  .ql-editor {
+    min-height: 280px;
+    max-height: 580px;
+    overflow-y: auto;
+  }
+`;
 
 const AddBlogPost = ({ isLoggedIn, setIsLoggedIn }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [category, setCategory] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [token, setToken] = useState('');
-  const [isLoginView, setIsLoginView] = useState(true);
-  const toast = useToast();
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [category, setCategory] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [token, setToken] = useState('');
+    const [isLoginView, setIsLoginView] = useState(true);
+    const toast = useToast();
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -65,7 +81,6 @@ const AddBlogPost = ({ isLoggedIn, setIsLoggedIn }) => {
       });
     }
   };
-
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -126,7 +141,6 @@ const AddBlogPost = ({ isLoggedIn, setIsLoggedIn }) => {
     const newPost = {
       id: Date.now(),
       title,
-      subtitle,
       date: new Date().toLocaleDateString(),
       category,
       body: content,
@@ -153,7 +167,6 @@ const AddBlogPost = ({ isLoggedIn, setIsLoggedIn }) => {
           isClosable: true,
         });
         setTitle('');
-        setSubtitle('');
         setContent('');
         setCategory('');
       } else {
@@ -283,12 +296,32 @@ const AddBlogPost = ({ isLoggedIn, setIsLoggedIn }) => {
     }
   };
 
+  const modules = {
+    toolbar: [
+      [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+      [{size: []}],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{'list': 'ordered'}, {'list': 'bullet'}, 
+       {'indent': '-1'}, {'indent': '+1'}],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ];
+
   if (!isLoggedIn) {
     return renderAuthForm();
   }
 
   return (
     <Box as="form" onSubmit={handleSubmit} bg="gray.800" p={4} borderRadius="lg" color="green.300">
+      <style>{quillStyles}</style>
       <VStack spacing={4}>
         <FormControl isRequired>
           <FormLabel color="cyan.300">Title</FormLabel>
@@ -323,16 +356,33 @@ const AddBlogPost = ({ isLoggedIn, setIsLoggedIn }) => {
         </FormControl>
         <FormControl isRequired>
           <FormLabel color="cyan.300">Content</FormLabel>
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Write your blog content here"
-            bg="gray.700"
-            color="green.300"
-            _placeholder={{ color: 'gray.400' }}
-            border="1px solid"
-            borderColor="gray.600"
-          />
+          <Box 
+            bg="gray.700" 
+            borderRadius="md" 
+            overflow="hidden"
+            sx={{
+              '.ql-toolbar': {
+                backgroundColor: '#FFFFFF',
+                border: 'none',
+                borderBottom: '1px solid #4A5568',
+              },
+              '.ql-container': {
+                border: 'none',
+              },
+              '.ql-editor': {
+                backgroundColor: '#2D3748',
+                color: '#68D391',
+              },
+            }}
+          >
+            <ReactQuill
+              theme="snow"
+              value={content}
+              onChange={setContent}
+              modules={modules}
+              formats={formats}
+            />
+          </Box>
         </FormControl>
         <Button type="submit" bg="cyan.300" color="gray.800" width="100%" _hover={{ bg: 'cyan.400' }}>
           Add Blog Post
