@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import {
   ChakraProvider,
   Box,
   Flex,
-  VStack,
   Heading,
   Button,
-  useColorMode,
-  IconButton,
   Container,
-  Stack,
   extendTheme,
 } from '@chakra-ui/react';
-import { SunIcon, MoonIcon } from '@chakra-ui/icons';
-import BlogContainer from './assets/components/BlogContainer';
-import AddBlogPost from './assets/components/AddBlogPost';
+import ReadPage from './assets/pages/ReadPage';
+import WritePage from './assets/pages/WritePage';
 
 // Custom theme for terminal-like appearance
 const theme = extendTheme({
@@ -37,109 +33,54 @@ const theme = extendTheme({
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { colorMode, toggleColorMode } = useColorMode();
 
   useEffect(() => {
-    // Check if token exists in localStorage
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
     }
   }, []);
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
   const handleLogout = () => {
-    // Remove the token from localStorage on logout
     localStorage.removeItem('token');
     setIsLoggedIn(false);
   };
 
-  const handleAddPost = (newPost) => {
-    console.log('New post:', newPost);
-    window.location.reload();
-  };
-
   return (
     <ChakraProvider theme={theme}>
-      <Box minHeight="100vh">
-        {/* Header */}
-        <Box bg="gray.800" py={4} px={8} color="green.300">
-          <Flex justifyContent="space-between" alignItems="center">
-            <Heading size="lg">BuraqBlogs</Heading>
-            <Flex alignItems="center">
-              <Button
-                variant="ghost"
-                color="cyan.300"
-                _hover={{ bg: 'gray.700' }}
-                mr={4}
-                onClick={isLoggedIn ? handleLogout : handleLogin}
-              >
-                {isLoggedIn ? 'Logout' : 'Login'}
-              </Button>
-              <IconButton
-                icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-                color="cyan.300"
-                _hover={{ bg: 'gray.700' }}
-                onClick={toggleColorMode}
-                variant="ghost"
-              />
-            </Flex>
-          </Flex>
-        </Box>
-
-        {/* Main content */}
-        <Container maxW="container.xl" py={8}>
-          <Stack direction={['column', 'column', 'row']} spacing={8}>
-            {/* Blog posts */}
-            <VStack spacing={8} align="stretch" flex={2}>
-              <BlogContainer />
-            </VStack>
-
-            {/* Sidebar */}
-            <Box flex={1}>
-              <VStack spacing={8} position="sticky" top="20px">
+      <Router>
+        <Box minHeight="100vh">
+          <Box bg="gray.800" py={4} px={8} color="green.300">
+            <Flex justifyContent="space-between" alignItems="center">
+              <Heading size="lg">BuraqBlogs</Heading>
+              <Flex>
+                <Button as={Link} to="/" variant="ghost" color="cyan.300" mr={4}>
+                  Read
+                </Button>
+                <Button as={Link} to="/write" variant="ghost" color="cyan.300" mr={4}>
+                  Write
+                </Button>
                 {isLoggedIn && (
-                  <Box
-                    width="100%"
-                    p={6}
-                    borderRadius="lg"
-                    bg="gray.700"
-                    color="green.300"
-                    border="1px solid"
-                    borderColor="gray.600"
+                  <Button
+                    variant="ghost"
+                    color="cyan.300"
+                    onClick={handleLogout}
                   >
-                    <Heading size="md" mb={4}>
-                      Add New Post
-                    </Heading>
-                    <AddBlogPost onAddPost={handleAddPost} />
-                  </Box>
+                    Logout
+                  </Button>
                 )}
-                <Box
-                  width="100%"
-                  p={6}
-                  borderRadius="lg"
-                  bg="gray.700"
-                  color="green.300"
-                  border="1px solid"
-                  borderColor="gray.600"
-                >
-                  <Heading size="md" mb={4}>
-                    About
-                  </Heading>
-                  <Box>
-                    Welcome to BuraqBlogs, where ideas come to life. Share your
-                    thoughts, read inspiring stories, and connect with fellow
-                    bloggers.
-                  </Box>
-                </Box>
-              </VStack>
-            </Box>
-          </Stack>
-        </Container>
-      </Box>
+              </Flex>
+            </Flex>
+          </Box>
+
+          <Container maxW="container.xl" py={8}>
+            <Routes>
+              <Route path="/" element={<ReadPage />} />
+              <Route path="/write" element={<WritePage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+            </Routes>
+          </Container>
+        </Box>
+      </Router>
     </ChakraProvider>
   );
 }

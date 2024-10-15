@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Textarea, VStack, useToast, Text, Link, Select } from '@chakra-ui/react';
 
-const AddBlogPost = () => {
+const AddBlogPost = ({ isLoggedIn, setIsLoggedIn }) => {
   const [title, setTitle] = useState('');
-  const [subtitle, setSubtitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState('');
   const [isLoginView, setIsLoginView] = useState(true);
   const toast = useToast();
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+      setIsLoggedIn(true);
+    }
+  }, [setIsLoggedIn]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,7 +37,7 @@ const AddBlogPost = () => {
       if (response.ok) {
         const data = await response.json();
         setToken(data.access_token);
-        localStorage.setItem('token', data.access_token);  // Save token to local storage
+        localStorage.setItem('token', data.access_token);
         setIsLoggedIn(true);
         toast({
           title: 'Login successful',
@@ -59,6 +65,7 @@ const AddBlogPost = () => {
       });
     }
   };
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
