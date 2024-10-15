@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Textarea, VStack, useToast, Text, Link } from '@chakra-ui/react';
 
 const AddBlogPost = () => {
-  const [author, setAuthor] = useState('');
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [content, setContent] = useState('');
@@ -123,7 +122,7 @@ const AddBlogPost = () => {
       date: new Date().toLocaleDateString(),
       category,
       body: content,
-      author,
+      author: username,
     };
 
     try {
@@ -145,8 +144,6 @@ const AddBlogPost = () => {
           duration: 3000,
           isClosable: true,
         });
-        // Reset form fields
-        setAuthor('');
         setTitle('');
         setSubtitle('');
         setContent('');
@@ -286,40 +283,12 @@ const AddBlogPost = () => {
     <Box as="form" onSubmit={handleSubmit} bg="gray.800" p={4} borderRadius="lg" color="green.300">
       <VStack spacing={4}>
         <FormControl isRequired>
-          <FormLabel color="cyan.300">Author Name</FormLabel>
-          <Input
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            placeholder="Enter author name"
-            bg="gray.700"
-            color="green.300"
-            _placeholder={{ color: 'gray.400' }}
-            border="1px solid"
-            borderColor="gray.600"
-          />
-        </FormControl>
-        <FormControl isRequired>
           <FormLabel color="cyan.300">Title</FormLabel>
           <Input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter blog title"
-            bg="gray.700"
-            color="green.300"
-            _placeholder={{ color: 'gray.400' }}
-            border="1px solid"
-            borderColor="gray.600"
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel color="cyan.300">Subtitle</FormLabel>
-          <Input
-            type="text"
-            value={subtitle}
-            onChange={(e) => setSubtitle(e.target.value)}
-            placeholder="Enter blog subtitle"
             bg="gray.700"
             color="green.300"
             _placeholder={{ color: 'gray.400' }}

@@ -40,6 +40,10 @@ const BlogContainer = () => {
     setSelectedBlogId(null);
   };
 
+  const handleDeleteBlog = (deletedBlogId) => {
+    setBlogs(blogs.filter(blog => blog.id !== deletedBlogId));
+  };
+
   return (
     <Box color="green.300" bg="gray.800" p={4} borderRadius="lg">
       {!selectedBlogId && (
@@ -77,7 +81,11 @@ const BlogContainer = () => {
       )}
 
       {selectedBlogId && (
-        <BlogPost blogId={selectedBlogId} onClose={handleBackToList} />
+        <BlogPost 
+          blogId={selectedBlogId} 
+          onClose={handleBackToList} 
+          onDelete={handleDeleteBlog}
+        />
       )}
     </Box>
   );

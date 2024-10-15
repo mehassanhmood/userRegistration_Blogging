@@ -35,6 +35,12 @@ const theme = extendTheme({
   },
 });
 
+const handleLogout = () => {
+    localStorage.removeItem('token'); // Clear the token from localStorage
+    setIsLoggedIn(false); // Update the state
+    window.location.reload(); // Reload to ensure UI updates properly
+  };
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
