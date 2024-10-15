@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, Textarea, VStack, useToast, Text, Link } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Input, Textarea, VStack, useToast, Text, Link, Select } from '@chakra-ui/react';
 
 const AddBlogPost = () => {
   const [title, setTitle] = useState('');
@@ -299,17 +299,20 @@ const AddBlogPost = () => {
         </FormControl>
         <FormControl isRequired>
           <FormLabel color="cyan.300">Category</FormLabel>
-          <Input
-            type="text"
+          <Select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            placeholder="Enter blog category"
+            placeholder="Select category"
             bg="gray.700"
             color="green.300"
             _placeholder={{ color: 'gray.400' }}
             border="1px solid"
             borderColor="gray.600"
-          />
+          >
+            <option value="Tech">Tech</option>
+            <option value="Stock Market">Stock Market</option>
+            <option value="General">General</option>
+          </Select>
         </FormControl>
         <FormControl isRequired>
           <FormLabel color="cyan.300">Content</FormLabel>
