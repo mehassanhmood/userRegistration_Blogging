@@ -9,7 +9,7 @@ from pydantic import BaseModel
 class BlogModel(BaseModel):
     id: int
     title: str
-    subtitle: str
+    # subtitle: str
     date: str
     category: str
     body: str
