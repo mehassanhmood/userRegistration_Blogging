@@ -162,7 +162,7 @@ const AddBlogPost = ({ isLoggedIn, setIsLoggedIn }) => {
         };
 
         try {
-            const response = await fetch('http://localhost:8000/blog/blogs?db=blogs.db', {
+            const response = await fetch('http://localhost:8000/blog/blogs', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
